@@ -17,7 +17,7 @@ Write-Host " _____     _   _____   _         _              _____         _ _
 |_|___|___|_| |__|__|___|__,|  _|_| |___|_|    |_|_|_|___|_|_|_|_| |___|_|  
                             |_|                                             
                             "
-Write-Host "This script is used to monitor a wireless adapter's connection every second, and then log the date and time the second it is found to be disconnected."
+Write-Host "This script is used to monitor a network adapter's connection every second, and then log the date and time the second it is found to be disconnected."
 Write-Host ""
 
 $script:time = Get-Date -Format HH:mm:ss
