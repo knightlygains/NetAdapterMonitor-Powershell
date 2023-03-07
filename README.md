@@ -1,5 +1,5 @@
 # NetAdapterMonitor-Powershell
-Powershell script to monitor a wireless adapter every second until it disconnects.
+Powershell script to monitor a network adapter every second until it disconnects.
 Run this script on a local machine to monitor a network adapter's connection status every second.
 Results are logged to a txt file in the current user's documents directory.
 
