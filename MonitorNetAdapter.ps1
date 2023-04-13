@@ -1,3 +1,19 @@
+<#
+    .DESCRIPTION
+        A script to monitor a network adapters connection status in realtime and
+        log any disconnects and reconnects.
+     
+     
+    .NOTES   
+        Name: MonitorNetAdapter
+        Author: Steven Whitney
+        Version: 1.1
+        DateCreated: 2023-Mar-07
+     
+    .LINK
+        https://github.com/knightlygains/NetAdapterMonitor-Powershell
+#>
+
 # Disconnected=0,
 # Connecting=1,
 # Connected=2,
@@ -168,10 +184,7 @@ $script:disconnectTime = $null
 Function logConnection ($connectionStart) {
     
     if (-not($null -eq (Get-Variable -Name "$answer :*"))) {
-        #Get current user's documents folder
-        $userDocuments = [Environment]::GetFolderPath("MyDocuments")
-        # Write-Host "$userDocuments"
-        $script:resultsDir = "$userDocuments\AdapterMonitorResults"
+        $script:resultsDir = "C:\AdapterMonitorResults"
         $script:resultsTxtPath = "$resultsDir\AdapterMonitorResults.txt"
     
         #If directory already exists
