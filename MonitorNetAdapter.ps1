@@ -7,7 +7,7 @@
     .NOTES   
         Name: MonitorNetAdapter
         Author: Steven Whitney
-        Version: 1.1
+        Version: 1.2
         DateCreated: 2023-Mar-07
      
     .LINK
@@ -149,11 +149,12 @@ $answer2 = Read-Host "How long will we monitor? (Answer in minutes)"
 Write-Host ""
 
 try {
-    $script:monitorLength = [int]$answer2 * 60
+    # Answered in minutes, so multiply by 60 seconds
+    $script:monitor_length_seconds = [int]$answer2 * 60
+    $script:total_seconds = $monitor_length_seconds
 }
 catch {
-    Write-Host "Invalid input for time to wait."
-    Write-Host ""
+    Write-Host "Invalid input for time to wait.`n"
     break
 }
 
@@ -227,7 +228,7 @@ $script:startMonitor = $false
 $script:connected = $false
 #Function to update adapter NetConenctionStatus values and show status in terminal
 Function monitorAdapter {
-    $timeLeft = getTimeLeft($monitorLength)
+    $timeLeft = getTimeLeft($monitor_length_seconds)
     getAdapters #update wifi adapter variables for next loop through
 
     $adapterValue = Get-Variable -Name "$answer :*" -ValueOnly
@@ -238,8 +239,7 @@ Function monitorAdapter {
         Write-Host "Connected" -ForegroundColor Green -NoNewline
         Write-Host " Ctrl+C to QUIT"
         monitorAnimation
-        Write-Host "$timeLeft"
-        Write-Host ""
+        Write-Host "$timeLeft`n"
         logConnection
         $script:disconnectCounter = 0
     }
@@ -264,23 +264,23 @@ if (-not($null -eq (Get-Variable -Name "$answer :*"))) {
     logConnection($connectionStart = $true)
     $script:startMonitor = $true
 
+    $stopwatch = [system.diagnostics.stopwatch]::StartNew()
+    
     while ($script:startMonitor) {
 
-        monitorAdapter
-        $script:monitorLength -= 1
+        if (($stopwatch.ElapsedMilliseconds / 1000) -lt $script:total_seconds) {
 
-        #If monitor length time expires end the loop
-        if ($script:monitorLength -le 0) {
+            $monitor_length_seconds = $script:total_seconds - ([math]::Floor($stopwatch.ElapsedMilliseconds / 1000))
+            monitorAdapter
+            Start-Sleep -Seconds 1
+        }
+        else {
             $script:startMonitor = $false
             break
         }
-
-        Start-Sleep 1
     }
 }
 
-Write-Host ""
-Write-Host "Results have been saved to a txt file at $script:resultsTxtPath."
-Write-Host ""
+Write-Host "Results have been saved to a txt file at $script:resultsTxtPath.`n"
     
 Start-Process explorer $script:resultsDir
